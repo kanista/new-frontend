@@ -8,12 +8,12 @@ import { MailOutlined, SearchOutlined, UserOutlined} from "@ant-design/icons";
 
 const { Content, Sider } = Layout;
 
-// const menuItems = [
-//     { key: 'My Day', label: 'My Day' },
-//     { key: 'Important', label: 'Important' },
-//     { key: 'Completed', label: 'Completed' },
-//     { key: 'Notification', label: 'Notification' },
-// ];
+const menuItems = [
+    { key: 'My Day', label: 'My Day' },
+    { key: 'Important', label: 'Important' },
+    { key: 'Completed', label: 'Completed' },
+    { key: 'Notification', label: 'Notification' },
+];
 
 
 const Dashboard = () => {
@@ -201,19 +201,19 @@ const Dashboard = () => {
                             selectedKeys={[selectedMenu]}
                             mode="inline"
                             onClick={(e) => handleMenuClick(e.key)}
-                            // items={menuItems}
-                        >
-                            <Menu.Item key="My Day">My Day</Menu.Item>
-                            <Menu.Item key="Important">Important</Menu.Item>
-                            <Menu.Item key="Completed">Completed</Menu.Item>
-                            <Menu.Item key="Notification">
-                                Notification
-                                {hasNotifications && !isNotificationViewed && (
-                                    <Badge dot offset={[5, 0]} style={{ marginLeft: 10 }} />
-                                )}
-                            </Menu.Item>
+                            items={menuItems}
+                        />
+                        {/*    <Menu.Item key="My Day">My Day</Menu.Item>*/}
+                        {/*    <Menu.Item key="Important">Important</Menu.Item>*/}
+                        {/*    <Menu.Item key="Completed">Completed</Menu.Item>*/}
+                        {/*    <Menu.Item key="Notification">*/}
+                        {/*        Notification*/}
+                        {/*        {hasNotifications && !isNotificationViewed && (*/}
+                        {/*            <Badge dot offset={[5, 0]} style={{ marginLeft: 10 }} />*/}
+                        {/*        )}*/}
+                        {/*    </Menu.Item>*/}
 
-                        </Menu>
+                        {/*</Menu>*/}
 
                     </div>
                 </Sider>
