@@ -17,6 +17,8 @@ const Login = () => {
                 // Save login status or token
                 localStorage.setItem("isLoggedIn", true);
                 localStorage.setItem("token",response.data.token);
+                localStorage.setItem("userName",response.data.username);
+                localStorage.setItem("userEmail",response.data.email);
 
                 // Redirect to the dashboard
                 navigate("/dashboard");

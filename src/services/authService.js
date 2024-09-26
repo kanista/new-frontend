@@ -22,6 +22,7 @@ const register=async (registerDto)=>{
             password: registerDto.password,
             confirmPassword: registerDto.confirmPassword,
             username: registerDto.name,
+            role: "USER"
         });
         console.log(response);
         return response;
