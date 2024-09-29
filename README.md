@@ -4,8 +4,8 @@ Description
 This TODO application allows users to manage their tasks efficiently. Users can perform CRUD (Create, Read, Update, Delete) operations on tasks. Additionally, tasks can be marked as important or completed, and users can filter tasks based on task title.
 
 Features
-\nAdd Tasks: Create new tasks with titles and descriptions.
-\nEdit Tasks: Modify existing tasks using a common modal for both add and edit actions.
+Add Tasks: Create new tasks with titles and descriptions.
+Edit Tasks: Modify existing tasks using a common modal for both add and edit actions.
 Delete Tasks: Remove tasks from the list.
 Mark as Important: Highlight tasks as important.
 Mark as Completed: Track completed tasks.
