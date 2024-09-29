@@ -11,5 +11,6 @@ export const API_ENDPOINTS = {
     UPDATE_TASK:(id)=>`${BASE_URL}/tasks/${id}`,
     UPDATE_TASK_STATUS:(id)=>`${BASE_URL}/tasks/${id}`,
     DELETE_TASK:(id)=>`${BASE_URL}/tasks/${id}`,
+    SEARCH_TASKS: `${BASE_URL}/tasks/search`
 
 };

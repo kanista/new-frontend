@@ -8,6 +8,8 @@ const getHeaders = () => ({
     'Authorization': `Bearer ${localStorage.getItem('token')}`,
 });
 
+console.log(localStorage.getItem('token'));
+
 // Function to create a new task
 const createTask = async (task) => {
     try {
@@ -21,7 +23,7 @@ const createTask = async (task) => {
             isImportant: task.isImportant,
         }, { headers: getHeaders() });
 
-        return response;
+        return response.data;
     } catch (error) {
         console.error("Error creating task:", error);
         throw error;
@@ -34,7 +36,7 @@ const getAllTasks = async () => {
         const response = await axios.get(API_ENDPOINTS.GET_ALL_TASKS, {
             headers: getHeaders(),
         });
-        return response;
+        return response.data;
     } catch (error) {
         console.error('Error fetching tasks:', error);
         throw error;
@@ -54,7 +56,7 @@ const updateTask = async (task) => {
             isImportant: task.isImportant,
         }, { headers: getHeaders() });
 
-        return response;
+        return response.data;
     } catch (error) {
         console.error('Error updating task:', error);
         throw error;
@@ -66,7 +68,7 @@ const deleteTask = async (taskId) => {
         const response = await axios.delete(API_ENDPOINTS.DELETE_TASK(taskId), {
             headers: getHeaders(),
         });
-        return response;
+        return response.data;
     } catch (error) {
         console.error('Error deleting task:', error);
         throw error;
@@ -80,7 +82,7 @@ const getImportantTasks = async (isImportant) => {
             headers: getHeaders(),
             params: { important: isImportant }  // Pass the 'important' parameter here
         });
-        return response;
+        return response.data;
     } catch (error) {
         console.error('Error fetching important tasks:', error);
         throw error;
@@ -94,39 +96,39 @@ const getCompletedTasks = async (isCompleted) => {
             headers: getHeaders(),
             params: { completed: isCompleted }  // Pass the 'completed' parameter here
         });
-        return response;
+        return response.data;
     } catch (error) {
         console.error('Error fetching completed tasks:', error);
         throw error;
     }
 };
 
-// Function to update task completion status
-const updateTaskCompletionStatus = async (taskId, isCompleted) => {
+// Generic function to update task status
+const updateTaskStatus = async (taskId, updates) => {
     try {
         const response = await axios.patch(
-            `${API_ENDPOINTS.UPDATE_TASK_STATUS(taskId)}`,
-            { isCompleted }, // No need to repeat the key for the value
+            API_ENDPOINTS.UPDATE_TASK_STATUS(taskId),
+            updates,
             { headers: getHeaders() }
         );
-        return response; // Return the response for further processing
+        return response.data;
     } catch (error) {
         console.error('Error updating task:', error);
-        throw error; // Rethrow the error to be handled in the calling function
+        throw error;
     }
 };
 
-// Function to update task importance status
-const updateTaskImportanceStatus = async (taskId, isImportant) => {
+const searchTasksByTitle = async (taskTitle) => {
     try {
-        const response = await axios.patch(
-            `${API_ENDPOINTS.UPDATE_TASK_STATUS(taskId)}`,
-            { isImportant },
-            { headers: getHeaders() }
-        );
-        return response;
+        const response = await axios.get(API_ENDPOINTS.SEARCH_TASKS, {
+            params: { taskTitle }, // Send the task title as a query param
+            headers: getHeaders()
+        });
+
+        return response.data;
+
     } catch (error) {
-        console.error('Error updating task:', error);
+        console.error('Error fetching tasks by title:', error);
         throw error;
     }
 };
@@ -138,5 +140,5 @@ export default {createTask,
     deleteTask,
     getCompletedTasks,
     getImportantTasks,
-    updateTaskCompletionStatus,
-    updateTaskImportanceStatus}
+    updateTaskStatus,
+    searchTasksByTitle}

@@ -45,12 +45,13 @@
   color: white;
 }
 
+.ant-input-affix-wrapper .ant-input-clear-icon{
+  color:white;
+}
 .dashboard-container.ant-layout-content{
   height: 100vh !important;
 }
-//.ant-layout-content{
-//  height: 100vh;
-//}
+
 
 .ant-checkbox-checked .ant-checkbox-inner{
   background-color: $primary-color;

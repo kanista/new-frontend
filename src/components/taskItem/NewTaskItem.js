@@ -37,7 +37,7 @@ const NewTaskItem=({ task, onEdit, onDelete, onToggleComplete, onToggleImportant
                             // lineHeight: '1.2em'
                         }}
                     >
-                {task.description}
+                {task.taskDescription}
             </span>
                 </div>
 

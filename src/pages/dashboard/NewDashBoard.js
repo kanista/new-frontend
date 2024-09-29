@@ -1,4 +1,4 @@
-import {Avatar, Button, Empty, Form, Input, Layout, Menu, message, Spin} from "antd";
+import {Avatar, Button, Empty, Form, Layout, Menu, message, Spin} from "antd";
 import {MailOutlined, SearchOutlined, UserOutlined} from "@ant-design/icons";
 import Sider from "antd/es/layout/Sider";
 import {Content} from "antd/es/layout/layout";
@@ -7,6 +7,7 @@ import NewTaskList from "../../components/taskList/NewTaskList";
 import taskService from "../../services/taskService";
 import './Dashboard.scss';
 import NewTaskModal from "../../components/taskModal/NewTaskModal";
+import Search from "antd/es/input/Search";
 
 const menuItems = [
     { key: 'My Day', label: 'My Day' },
@@ -37,7 +38,6 @@ const NewDashBoard=()=>{
         setLoading(true); // Set loading to true
         try {
             let response;
-            console.log(menuKey);
             switch (menuKey) {
                 case 'Important':
                     response = await taskService.getImportantTasks(true);
@@ -49,10 +49,14 @@ const NewDashBoard=()=>{
                     response = await taskService.getAllTasks();
                     break;
             }
-            if (response.status === 200) {
-                setTasks(response.data.data);
+            if (response.statusCode === 200) {
+                setTasks(response.data);
+            } else if (response.statusCode === 404) {
+                message.warning(response.message || 'No tasks found');
+            } else if (response.statusCode === 401) {
+                message.error('Unauthorized access. Please log in again.');
             } else {
-                message.error(response.data.message || 'Error fetching tasks');
+                message.error(response.message || 'An error occurred while fetching tasks.');
             }
         } catch (error) {
             message.error('An error occurred while fetching tasks.');
@@ -70,12 +74,16 @@ const NewDashBoard=()=>{
 
         try {
             const response = await taskService.createTask(newTaskData);
-            if (response.status === 201) {
-                message.success(response.data.message);
+            if (response.statusCode === 201) {
+                message.success(response.message);
                 form.resetFields();
                 fetchTasks();
+            } else if (response.statusCode === 404) {
+                message.warning(response.message || 'No tasks found');
+            } else if (response.statusCode === 401) {
+                message.error('Unauthorized access. Please log in again.');
             } else {
-                message.error(response.data.message || 'Error adding task');
+                message.error(response.message || 'Error adding task.');
             }
         } catch (error) {
             message.error("Error adding task.");
@@ -93,12 +101,16 @@ const NewDashBoard=()=>{
             };
 
             const response = await taskService.updateTask(updatedTaskData);
-            if (response.status === 200) {
-                message.success(response.data.message);
+            if (response.statusCode === 200) {
+                message.success(response.message);
                 fetchTasks();
                 form.resetFields();
+            } else if (response.statusCode === 404) {
+                message.warning(response.message || 'No tasks found');
+            } else if (response.statusCode === 401) {
+                message.error('Unauthorized access. Please log in again.');
             } else {
-                message.error(response.data.message || 'Error editing task');
+                message.error(response.message || 'An unexpected error occurred.');
             }
         } catch (error) {
             message.error("Error editing task.");
@@ -110,11 +122,15 @@ const NewDashBoard=()=>{
     const handleDeleteTask = async (taskId) => {
         try {
             const response = await taskService.deleteTask(taskId);
-            if (response.status === 200) {
-                message.success(response.data.message);
+            if (response.statusCode === 200) {
+                message.success(response.message);
                 fetchTasks();
+            } else if (response.statusCode === 404) {
+                message.warning(response.message || 'No tasks found');
+            } else if (response.statusCode === 401) {
+                message.error('Unauthorized access. Please log in again.');
             } else {
-                message.error(response.data.message || 'Error deleting task');
+                message.error(response.message || 'An unexpected error occurred.');
             }
         } catch (error) {
             message.error("Error deleting task.");
@@ -138,12 +154,13 @@ const NewDashBoard=()=>{
     // Function to handle task completion toggling
     const handleToggleComplete = async (taskId, isCompleted) => {
         try {
-            const response = await taskService.updateTaskCompletionStatus(taskId, isCompleted); // Pass taskId and isCompleted directly
-            if (response.status === 200) {
-                message.success(response.data.message);
+            const updates = { isCompleted: isCompleted };
+            const response = await taskService.updateTaskStatus(taskId, updates); // Pass taskId and isCompleted directly
+            if (response.statusCode === 200) {
+                message.success(response.message);
                 fetchTasks(); // Refetch tasks to reflect changes
             } else {
-                message.error(response.data.message || 'Error updating task completion status');
+                message.error(response.message || 'Error updating task completion status');
             }
         } catch (error) {
             message.error("Error updating task completion status.");
@@ -153,17 +170,45 @@ const NewDashBoard=()=>{
 // Function to handle task importance toggling
     const handleToggleImportant = async (taskId, isImportant) => {
         try {
-            const response = await taskService.updateTaskImportanceStatus(taskId, isImportant); // Pass taskId and isImportant directly
-            if (response.status === 200) {
-                message.success(response.data.message);
+            const updates = { isImportant: isImportant };
+            const response = await taskService.updateTaskStatus(taskId, updates); // Pass taskId and isImportant directly
+            if (response.statusCode === 200) {
+                message.success(response.message);
                 fetchTasks(); // Refetch tasks to reflect changes
+            } else if (response.statusCode === 401) {
+                message.error('Unauthorized access. Please log in again.');
             } else {
-                message.error(response.data.message || 'Error updating task importance status');
+                message.error(response.message || 'Error updating task importance status');
             }
         } catch (error) {
             message.error("Error updating task importance status.");
         }
     };
+
+    const handleSearch = async (value) => {
+        setLoading(true);
+        try {
+            // Make the search request using taskService
+            const response = await taskService.searchTasksByTitle(value);
+
+            // Check the response status and handle it accordingly
+            if (response.statusCode === 200) {
+                message.success(response.message);
+                setTasks(response.data);
+            } else if (response.statusCode === 404) {
+                message.warning(response.message || 'No tasks found');
+            } else if (response.statusCode === 401) {
+                message.error('Unauthorized access. Please log in again.');
+            } else {
+                message.error(response.message || 'An unexpected error occurred.');
+            }
+        } catch (error) {
+            message.error('Error fetching tasks by title. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
 
     const today = new Date().toLocaleDateString('en-US', {
@@ -211,13 +256,17 @@ const NewDashBoard=()=>{
                                     style={{color: 'white',marginBottom:'15px' ,
                                     }}/>
                             ) : (
-                                <Input
-                                    placeholder="Search tasks..."
-                                    // value={searchQuery}
-                                    // onChange={handleSearchChange}
+
+                                <Search
+                                    placeholder="Search tasks"
+                                    loading={loading}
+                                    enterButton="Search"
+                                    onSearch={handleSearch}
                                     style={{
                                         marginBottom: '10px',
+                                        width: 200,
                                     }}
+                                    allowClear
                                 />
                             )}
                         </div>

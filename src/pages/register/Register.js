@@ -22,14 +22,14 @@ const Register = () => {
             // Check if the registration was successful
             if (response.status === 200) {
                 console.log(response.data);
-                message.success(response.data); // Show success message
+                message.success(response.data.message); // Show success message
                 navigate("/login"); // Redirect after successful registration
             } else if (response.status === 400) {
                 console.log(response.data);
-                message.warning(response.data || "Email already exists."); // Show error if email exists
+                message.warning(response.data.message || "Email already exists."); // Show error if email exists
             } else {
                 console.log(response.data);
-                message.error(response.data || "Registration failed."); // Show general error
+                message.error(response.data.message || "Registration failed."); // Show general error
             }
         } catch (error) {
             message.error("An unexpected error occurred. Please try again.");

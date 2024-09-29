@@ -24,7 +24,7 @@ const register=async (registerDto)=>{
             username: registerDto.name,
             role: "USER"
         });
-        console.log(response);
+        console.log(response.data);
         return response;
     }catch(error){
         console.log(error);

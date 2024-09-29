@@ -10,15 +10,21 @@ const Login = () => {
     const onFinish = async (values) => {
         try {
             const response = await authService.login(values);
+            console.log(response);
 
             if (response.status===200) {
                 message.success(response.data.message);
 
                 // Save login status or token
                 localStorage.setItem("isLoggedIn", true);
-                localStorage.setItem("token",response.data.token);
-                localStorage.setItem("userName",response.data.username);
-                localStorage.setItem("userEmail",response.data.email);
+                console.log(localStorage.getItem("isLoggedIn"));
+
+                localStorage.setItem("token",response.data.data.token);
+                console.log(localStorage.getItem("token"));
+                localStorage.setItem("userName",response.data.data.username);
+                console.log(localStorage.getItem("userName"));
+                localStorage.setItem("userEmail",response.data.data.email);
+                console.log(localStorage.getItem("userEmail"));
 
                 // Redirect to the dashboard
                 navigate("/dashboard");
